@@ -40,3 +40,6 @@ To run locally:
 - Supports various Telegram export formats
 - Large chats may take a moment to process
 Last updated: 2026-06-07 19:52:37 UTC
+Last updated: 2026-06-07 19:59:06 UTC
+Last updated: 2026-06-07 20:04:56 UTC
+Last updated: 2026-06-07 20:05:09 UTC
