@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Message Parser</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Telegram Message Parser</h1>
+        <p>Upload your Telegram chat export (result.json) to get detailed statistics and visualizations.</p>
+        
+        <div class="upload-section">
+            <input type="file" id="fileInput" accept=".json">
+            <label for="fileInput" class="btn">Choose JSON file</label>
+            <span id="fileName" class="filename"></span>
+        </div>
+        
+        <div id="loading" class="hidden">
+            <div class="spinner"></div>
+            <p>Analyzing chat...</p>
+        </div>
+        
+        <div id="results" class="hidden">
+            <div class="stats-grid">
+                <!-- Stats will be populated here -->
+            </div>
+            
+            <div class="charts-container">
+                <!-- Charts will be populated here -->
+            </div>
+        </div>
+        
+        <div id="error" class="hidden alert alert-error"></div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="parser.js"></script>
+</body>
+</html>
