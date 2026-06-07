@@ -39,3 +39,4 @@ To run locally:
 - All processing happens in the browser - no data is sent to any server
 - Supports various Telegram export formats
 - Large chats may take a moment to process
+Last updated: 2026-06-07 19:52:37 UTC
