@@ -356,7 +356,7 @@ return `${label}: ${value} (${percentage})`;
 }
 }}
 }
-}
+});
 // Chart 6: Response time distribution
 const respChartCtx = document.createElement('canvas');
 respChartCtx.className = 'chart-canvas';
