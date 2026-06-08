@@ -12,19 +12,20 @@ const DOM = {};
 function cacheDOM() {
   DOM.fileInput = document.getElementById('fileInput');
   DOM.uploadZone = document.getElementById('uploadZone');
-  DOM.fileName = document.getElementById('fileName');
+  DOM.fileBadge = document.getElementById('fileBadge');
   DOM.fileNameText = document.getElementById('fileNameText');
-  DOM.loading = document.getElementById('loading');
+  DOM.fileIndicator = document.querySelector('.file-indicator');
+  DOM.loading = document.querySelector('.loader-overlay');
   DOM.loaderDetail = document.getElementById('loaderDetail');
   DOM.results = document.getElementById('results');
-  DOM.error = document.getElementById('error');
+  DOM.error = document.querySelector('.error-bar');
   DOM.chatTitle = document.getElementById('chatTitle');
   DOM.chatType = document.getElementById('chatType');
   DOM.msgCount = document.getElementById('msgCount');
   DOM.statsGrid = document.getElementById('statsGrid');
   DOM.chartsContainer = document.getElementById('chartsContainer');
-  DOM.rawStats = document.getElementById('rawStats');
-  DOM.tabs = document.querySelectorAll('.tab');
+  /* DOM.rawStats removed */
+  DOM.tabs = document.querySelectorAll('.nav-item');
 }
 
 function showError(msg) {
@@ -244,7 +245,7 @@ function render(stats) {
   DOM.msgCount.textContent = formatNumber(stats.total) + ' msgs';
   renderStatsGrid(stats);
   renderCharts(stats);
-  DOM.rawStats.textContent = JSON.stringify(stats, (k, v) => k === 'messages' || k === 'sortedByTime' || k === 'msgLengths' || k === 'respTimes' ? undefined : v, 2);
+  
 }
 
 function renderStatsGrid(stats) {
@@ -338,7 +339,7 @@ function chartOptions(type, data) {
   if (data && data.datasets) {
     data.datasets.forEach((ds, i) => {
       if (!ds.borderColor && !ds.backgroundColor) {
-        ds.backgroundColor = i === 0 ? '#06b6d4' : '#8b5cf6';
+        ds.backgroundColor = i === 0 ? '#c9753d' : '#8a7bb5';
       }
     });
   }
@@ -356,7 +357,7 @@ function chartOptions(type, data) {
 
 function buildLine(perDay) {
   const labels = Object.keys(perDay).sort();
-  return { labels, datasets: [{ label: 'Messages', data: labels.map(l => perDay[l]), borderColor: '#06b6d4', backgroundColor: 'rgba(6,182,212,0.1)', fill: true, tension: 0.3, pointRadius: 2, pointHoverRadius: 6 }] };
+  return { labels, datasets: [{ label: 'Messages', data: labels.map(l => perDay[l]), borderColor: '#c9753d', backgroundColor: 'rgba(201,117,61,0.1)', fill: true, tension: 0.3, pointRadius: 2, pointHoverRadius: 6 }] };
 }
 
 function buildHour(perHour) {
@@ -365,9 +366,9 @@ function buildHour(perHour) {
   const gradient = data.map(v => {
     const max = Math.max(...data, 1);
     const ratio = v / max;
-    if (ratio > 0.7) return '#ef4444';
-    if (ratio > 0.4) return '#f59e0b';
-    if (ratio > 0.15) return '#06b6d4';
+    if (ratio > 0.7) return '#b55656';
+    if (ratio > 0.4) return '#c9753d';
+    if (ratio > 0.15) return '#c9753d';
     return '#1e293b';
   });
   return { labels, datasets: [{ label: 'Messages', data, backgroundColor: gradient, borderRadius: 2 }] };
@@ -376,23 +377,23 @@ function buildHour(perHour) {
 function buildWeekday(perWeekday) {
   const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const data = Array.from({ length: 7 }, (_, i) => perWeekday[i] || 0);
-  return { labels, datasets: [{ label: 'Messages', data, backgroundColor: '#8b5cf6', borderRadius: 2 }] };
+  return { labels, datasets: [{ label: 'Messages', data, backgroundColor: '#8a7bb5', borderRadius: 2 }] };
 }
 
 function buildMonthly(perMonth) {
   const labels = Object.keys(perMonth).sort();
-  return { labels, datasets: [{ label: 'Messages', data: labels.map(l => perMonth[l]), backgroundColor: '#10b981', borderRadius: 2 }] };
+  return { labels, datasets: [{ label: 'Messages', data: labels.map(l => perMonth[l]), backgroundColor: '#6b9e6b', borderRadius: 2 }] };
 }
 
 function buildTopSenders(senders, total) {
   const top = senders.slice(0, 10);
-  const colors = ['#06b6d4', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#3b82f6', '#14b8a6', '#a855f7', '#f97316'];
+  const colors = ['#c9753d', '#8a7bb5', '#6b9e6b', '#c9753d', '#b55656', '#b57a8a', '#6b9e6b', '#8a7bb5', '#7a6ba5', '#d48a50'];
   return { labels: top.map(s => s.sender.replace(/[^a-zA-Z0-9_ ]/g, '')), datasets: [{ label: 'Messages', data: top.map(s => s.count), backgroundColor: top.map((_, i) => colors[i % colors.length]), borderRadius: 2 }] };
 }
 
 function buildLenDist(lenDist) {
   const labels = Object.keys(lenDist);
-  return { labels, datasets: [{ label: 'Messages', data: labels.map(l => lenDist[l]), backgroundColor: '#06b6d4', borderRadius: 2 }] };
+  return { labels, datasets: [{ label: 'Messages', data: labels.map(l => lenDist[l]), backgroundColor: '#c9753d', borderRadius: 2 }] };
 }
 
 function buildRespDist(respTimes) {
@@ -402,27 +403,27 @@ function buildRespDist(respTimes) {
   respTimes.forEach(s => {
     if (s < 60) bins[0]++; else if (s < 300) bins[1]++; else if (s < 900) bins[2]++; else if (s < 3600) bins[3]++; else if (s < 21600) bins[4]++; else bins[5]++;
   });
-  return { labels: binLabels, datasets: [{ label: 'Responses', data: bins, backgroundColor: '#f59e0b', borderRadius: 2 }] };
+  return { labels: binLabels, datasets: [{ label: 'Responses', data: bins, backgroundColor: '#c9753d', borderRadius: 2 }] };
 }
 
 function buildEmojiChart(topEmojis) {
   const top = topEmojis.slice(0, 10);
   if (top.length === 0) return null;
-  const colors = ['#06b6d4', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#3b82f6', '#14b8a6', '#a855f7', '#f97316'];
+  const colors = ['#c9753d', '#8a7bb5', '#6b9e6b', '#c9753d', '#b55656', '#b57a8a', '#6b9e6b', '#8a7bb5', '#7a6ba5', '#d48a50'];
   return { labels: top.map(e => e.emoji), datasets: [{ label: 'Uses', data: top.map(e => e.count), backgroundColor: top.map((_, i) => colors[i % colors.length]), borderRadius: 2 }] };
 }
 
 function buildMediaPie(mediaTypes) {
   const labels = Object.keys(mediaTypes).filter(k => mediaTypes[k] > 0);
   if (labels.length === 0) return null;
-  const colors = ['#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+  const colors = ['#c9753d', '#6b9e6b', '#c9753d', '#b55656', '#8a7bb5', '#b57a8a'];
   return { labels, datasets: [{ label: 'Media', data: labels.map(l => mediaTypes[l]), backgroundColor: colors.slice(0, labels.length), borderWidth: 0 }] };
 }
 
 function buildReplied(replied) {
   if (!replied || replied.length === 0) return null;
   const top = replied.slice(0, 10);
-  return { labels: top.map(s => s.sender.replace(/[^a-zA-Z0-9_ ]/g, '')), datasets: [{ label: 'Replies received', data: top.map(s => s.count), backgroundColor: '#ec4899', borderRadius: 2 }] };
+  return { labels: top.map(s => s.sender.replace(/[^a-zA-Z0-9_ ]/g, '')), datasets: [{ label: 'Replies received', data: top.map(s => s.count), backgroundColor: '#b57a8a', borderRadius: 2 }] };
 }
 
 function buildCumulative(sorted) {
@@ -432,13 +433,13 @@ function buildCumulative(sorted) {
   const labels = Object.keys(days).sort();
   let cum = 0;
   const data = labels.map(l => { cum += days[l]; return cum; });
-  return { labels, datasets: [{ label: 'Total Messages', data, borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.1)', fill: true, tension: 0.3, pointRadius: 0 }] };
+  return { labels, datasets: [{ label: 'Total Messages', data, borderColor: '#8a7bb5', backgroundColor: 'rgba(139,92,246,0.1)', fill: true, tension: 0.3, pointRadius: 0 }] };
 }
 
 function buildSenderPie(senders) {
   const top = senders.slice(0, 8);
   if (top.length < 2) return null;
-  const colors = ['#06b6d4', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#3b82f6', '#14b8a6'];
+  const colors = ['#c9753d', '#8a7bb5', '#6b9e6b', '#c9753d', '#b55656', '#b57a8a', '#6b9e6b', '#8a7bb5'];
   return { labels: top.map(s => s.sender.replace(/[^a-zA-Z0-9_ ]/g, '')), datasets: [{ label: 'Messages', data: top.map(s => s.count), backgroundColor: colors.slice(0, top.length), borderWidth: 0 }] };
 }
 
@@ -470,8 +471,8 @@ function addHeatmap(cc, title, messages) {
       else if (ratio < 0.1) color = '#0c2d3b';
       else if (ratio < 0.25) color = '#0b5e7a';
       else if (ratio < 0.5) color = '#0a8eb8';
-      else if (ratio < 0.75) color = '#06b6d4';
-      else color = '#ff6b6b';
+      else if (ratio < 0.75) color = '#c9753d';
+      else color = '#b55656';
       allCells.push(`<div class="heatmap-cell" style="background:${color}" title="${days[dIndex]} ${h}:00 — ${v} msgs"></div>`);
     });
   });
@@ -507,13 +508,16 @@ function addWordCloud(cc, title, words) {
 
 function initTabs() {
   DOM.tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
       DOM.tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       const target = tab.dataset.tab;
       document.querySelectorAll('.chart-panel').forEach(p => {
-        if (target === 'overview' || p.dataset.tab === target) p.style.display = 'block';
-        else p.style.display = 'none';
+        p.style.display = 'block';
+        if (target !== 'overview' && p.dataset.tab !== target) {
+          p.style.display = 'none';
+        }
       });
     });
   });
@@ -535,10 +539,22 @@ function init() {
   DOM.fileInput.addEventListener('change', (e) => {
     if (e.target.files[0]) processFile(e.target.files[0]);
   });
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  if (menuBtn && sidebar) {
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 480 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+        sidebar.classList.remove('open');
+      }
+    });
+  }
 }
 
 function processFile(file) {
-  DOM.fileName.classList.remove('hidden');
+  DOM.fileBadge.classList.remove('hidden');
   DOM.fileNameText.textContent = file.name + ' (' + formatNumber(file.size) + ' B)';
   DOM.results.classList.add('hidden');
   DOM.error.classList.add('hidden');

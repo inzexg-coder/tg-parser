@@ -3,89 +3,119 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TG Chat Analyzer</title>
+<title>tg · chat analyzer</title>
 <link rel="stylesheet" href="style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<header class="header">
-<div class="header-inner">
-<div class="logo">
-<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-<span>TG Chat Analyzer</span>
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+<div class="brand">
+<a href="/" class="brand-link">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+<span>tg·chat</span>
+</a>
 </div>
-<span class="badge">OSINT</span>
+
+<nav class="side-nav" id="sideNav">
+<a href="#" class="nav-item active" data-tab="overview">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+<span>Overview</span>
+</a>
+<a href="#" class="nav-item" data-tab="activity">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+<span>Activity</span>
+</a>
+<a href="#" class="nav-item" data-tab="users">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+<span>Users</span>
+</a>
+<a href="#" class="nav-item" data-tab="content">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+<span>Content</span>
+</a>
+<a href="#" class="nav-item" data-tab="media">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+<span>Media</span>
+</a>
+</nav>
+
+<div class="sidebar-footer">
+<span class="version">v0.2</span>
+</div>
+</aside>
+
+<div class="main-content">
+
+<header class="topbar">
+<div class="topbar-left">
+<button class="menu-btn" id="menuBtn">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<h1 class="page-title">Chat Analyzer</h1>
+</div>
+<div class="topbar-right">
+<span class="file-indicator" id="fileIndicator">No file loaded</span>
 </div>
 </header>
 
-<main class="main">
-
-<section class="hero">
-<h1>Telegram Chat <span class="gradient">Analyzer</span></h1>
-<p class="subtitle">Upload your Telegram export and get comprehensive chat intelligence with interactive visualizations</p>
-
-<div class="upload-zone" id="uploadZone">
+<section class="upload-section" id="uploadSection">
+<div class="upload-box" id="uploadZone">
 <input type="file" id="fileInput" accept=".json" hidden>
-<div class="upload-content">
-<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-<p>Drop your <code>result.json</code> here or <span class="link">browse</span></p>
-<span class="hint">Supports Telegram desktop & mobile exports</span>
+<div class="upload-inner">
+<div class="upload-icon">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+</div>
+<p class="upload-text">Drop your <strong>result.json</strong> here</p>
+<p class="upload-hint">or click to browse · Telegram desktop & mobile exports</p>
 </div>
 </div>
-<div id="fileName" class="file-info hidden"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span id="fileNameText"></span></div>
+<div class="file-badge hidden" id="fileBadge">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+<span id="fileNameText"></span>
+</div>
 </section>
 
-<div id="loading" class="hidden">
-<div class="loader">
-<div class="loader-ring"></div>
-<div class="loader-text">
-<p class="loader-title">Analyzing chat</p>
-<p class="loader-detail" id="loaderDetail">Parsing messages...</p>
-</div>
+<div class="loader-overlay hidden" id="loading">
+<div class="loader-box">
+<div class="loader-spinner"></div>
+<p class="loader-title">Analyzing</p>
+<p class="loader-detail" id="loaderDetail">reading file...</p>
 </div>
 </div>
 
-<div id="error" class="hidden"></div>
+<div class="error-bar hidden" id="error"></div>
 
-<div id="results" class="hidden">
+<div class="results hidden" id="results">
 
-<section class="chat-header">
-<div class="chat-meta">
+<div class="chat-summary" id="chatSummary">
+<div class="summary-avatar">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</div>
+<div class="summary-text">
 <h2 id="chatTitle">Chat</h2>
-<div class="chat-badges">
-<span class="badge badge-type" id="chatType">personal</span>
-<span class="badge badge-msg" id="msgCount">0</span>
+<div class="summary-meta">
+<span class="meta-item" id="chatType">personal</span>
+<span class="meta-divider">·</span>
+<span class="meta-item" id="msgCount">0 messages</span>
 </div>
 </div>
-</section>
-
-<section>
-<div class="stats-grid" id="statsGrid"></div>
-</section>
-
-<section>
-<div class="tabs">
-<button class="tab active" data-tab="overview">Overview</button>
-<button class="tab" data-tab="activity">Activity</button>
-<button class="tab" data-tab="users">Users</button>
-<button class="tab" data-tab="content">Content</button>
-<button class="tab" data-tab="media">Media</button>
 </div>
-<div class="charts-container" id="chartsContainer"></div>
-</section>
 
-<section class="raw-section">
-<details>
-<summary> Raw Data <span class="badge">JSON</span></summary>
-<pre id="rawStats"></pre>
-</details>
-</section>
+<div class="grid-2col" id="statsGrid"></div>
+
+<hr class="section-divider">
+
+<div id="chartsContainer"></div>
 
 </div>
 
-</main>
+</div>
+
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script src="parser.js"></script>
