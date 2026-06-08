@@ -40,10 +40,30 @@ function formatNumber(n) {
 }
 
 function formatTime(seconds) {
+  if (seconds < 1) return '<1s';
   if (seconds < 60) return Math.round(seconds) + 's';
   if (seconds < 3600) return Math.round(seconds / 60) + 'm';
   if (seconds < 86400) return Math.round(seconds / 3600) + 'h';
-  return Math.round(seconds / 86400) + 'd';
+  return (seconds / 86400).toFixed(1) + 'd';
+}
+
+function animateValue(el, start, end, duration, suffix) {
+  if (!el) return;
+  const startTime = performance.now();
+  const isFloat = end % 1 !== 0;
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = start + (end - start) * eased;
+    if (isFloat) {
+      el.textContent = current.toFixed(1) + (suffix || '');
+    } else {
+      el.textContent = Math.round(current).toLocaleString() + (suffix || '');
+    }
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
 }
 
 function normalizeMessages(data) {
@@ -319,9 +339,9 @@ let chartInstances = [];
 function chartOptions(type, data) {
   const base = {
     responsive: true, maintainAspectRatio: true,
-    animation: { duration: 800, easing: 'easeOutQuart' },
+    animation: { duration: 1200, easing: 'easeOutQuart', delay: (ctx) => ctx.dataIndex * 40 },
     plugins: {
-      legend: { labels: { color: '#94a3b8', font: { family: "'Inter', sans-serif", size: 11 }, boxWidth: 12, padding: 12 } }
+      legend: { labels: { color: '#a09080', font: { family: "'DM Sans', sans-serif", size: 11 }, boxWidth: 12, padding: 12 } }
     }
   };
   if (type === 'line' || type === 'bar') {
@@ -489,12 +509,12 @@ function addWordCloud(cc, title, words) {
   const cloud = document.createElement('div');
   cloud.className = 'wordcloud';
   const maxCount = words[0].count;
-  words.slice(0, 40).forEach(w => {
+  words.slice(0, 40).forEach((w, i) => {
     const ratio = w.count / maxCount;
     const size = 10 + ratio * 24;
     const opacity = 0.4 + ratio * 0.6;
     const span = document.createElement('span');
-    span.style.cssText = `font-size:${size}px;opacity:${opacity}`;
+    span.style.cssText = `font-size:${size}px;opacity:${opacity};animation-delay:${i * 0.02}s`;
     span.textContent = w.word;
     span.title = `${w.word}: ${w.count}`;
     cloud.appendChild(span);
