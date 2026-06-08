@@ -18,187 +18,255 @@ _warn()   { echo -e "${CLR_YELLOW}[WARN]${CLR_RESET}  $*"; }
 _error()  { echo -e "${CLR_RED}[ERROR]${CLR_RESET} $*" >&2; }
 
 _is_windows() {
-  case "$(uname -s)" in
-    CYGWIN*|MINGW*|MSYS*) return 0 ;;
-    *) return 1 ;;
-  esac
+  case "$(uname -s)" in CYGWIN*|MINGW*|MSYS*) return 0 ;; *) return 1 ;; esac
 }
 
 _require_file() {
-  if [ ! -f "$1" ]; then
-    _error "File not found: $1"
-    exit 1
-  fi
+  if [ ! -f "$1" ]; then _error "File not found: $1"; exit 1; fi
 }
 
 _require_node() {
   if ! command -v node &>/dev/null; then
-    _error "Node.js is required. Install:"
-    if _is_windows; then
-      _error "  winget install OpenJS.NodeJS"
-      _error "  or download from https://nodejs.org"
-    else
-      _error "  sudo pacman -S nodejs npm  (Arch Linux)"
-      _error "  sudo apt install nodejs npm  (Debian/Ubuntu)"
-    fi
+    _error "Node.js is required."
+    if _is_windows; then _error "  winget install OpenJS.NodeJS"; else _error "  sudo pacman -S nodejs npm"; fi
     exit 1
   fi
 }
 
+_run_node() {
+  _require_node
+  _require_file "$1"
+  node "$AMENI_LIB" "$@"
+}
+
+# ---------------------------------------------------------------------------
+#  stats — full report
+# ---------------------------------------------------------------------------
 _cmd_stats() {
   local file="${1:-}"
   if [ -z "$file" ]; then
     _error "Usage: ameni tg stats <result.json>"
-    echo "  Parse a Telegram export JSON and show full chat statistics."
+    echo "  Full chat statistics: messages, participants, activity breakdown."
     echo "  Example: ameni tg stats ./result.json"
     exit 2
   fi
-  _require_file "$file"
-  _require_node
-  _info "File: $file"
-  echo
-  node "$AMENI_LIB" "$file" stats
+  _run_node "$file" stats
 }
 
+# ---------------------------------------------------------------------------
+#  top — top senders bar chart
+# ---------------------------------------------------------------------------
 _cmd_top() {
   local file="${1:-}"
-  if [ -z "$file" ]; then
-    _error "Usage: ameni tg top <result.json>"
-    echo "  Show top message senders in a Telegram chat export."
-    echo "  Example: ameni tg top ./result.json"
-    exit 2
-  fi
-  _require_file "$file"
-  _require_node
-  _info "File: $file"
-  echo
-  node "$AMENI_LIB" "$file" top
+  if [ -z "$file" ]; then _error "Usage: ameni tg top <result.json>"; exit 2; fi
+  _run_node "$file" top
 }
 
+# ---------------------------------------------------------------------------
+#  activity — by hour and weekday
+# ---------------------------------------------------------------------------
 _cmd_activity() {
   local file="${1:-}"
-  if [ -z "$file" ]; then
-    _error "Usage: ameni tg activity <result.json>"
-    echo "  Show message activity patterns: by hour and by weekday."
-    echo "  Example: ameni tg activity ./result.json"
-    exit 2
-  fi
-  _require_file "$file"
-  _require_node
-  _info "File: $file"
-  echo
-  node "$AMENI_LIB" "$file" activity
+  if [ -z "$file" ]; then _error "Usage: ameni tg activity <result.json>"; exit 2; fi
+  _run_node "$file" activity
 }
 
+# ---------------------------------------------------------------------------
+#  media — media distribution
+# ---------------------------------------------------------------------------
 _cmd_media() {
   local file="${1:-}"
-  if [ -z "$file" ]; then
-    _error "Usage: ameni tg media <result.json>"
-    echo "  Show media distribution (photos, videos, stickers, etc.)"
-    echo "  Example: ameni tg media ./result.json"
-    exit 2
-  fi
-  _require_file "$file"
-  _require_node
-  _info "File: $file"
-  echo
-  node "$AMENI_LIB" "$file" media
+  if [ -z "$file" ]; then _error "Usage: ameni tg media <result.json>"; exit 2; fi
+  _run_node "$file" media
 }
 
+# ---------------------------------------------------------------------------
+#  get — any specific metric
+# ---------------------------------------------------------------------------
+_cmd_get() {
+  local file="${1:-}"
+  local metric="${2:-}"
+  if [ -z "$file" ] || [ -z "$metric" ]; then
+    _error "Usage: ameni tg get <result.json> <metric>"
+    echo ""
+    echo "  Available metrics:"
+    echo "    total-messages       Total messages and chat duration"
+    echo "    participants         Number of participants and top two share"
+    echo "    top-senders          Top 20 senders with percentages"
+    echo "    messages-per-day     Average and peak messages per day"
+    echo "    total-chars          Total characters, words, unique words"
+    echo "    avg-message-length   Average and longest message"
+    echo "    media-messages       Media count and ratio"
+    echo "    avg-response-time    Average response time"
+    echo "    emojis-used          Total emojis and top 10"
+    echo "    replies              Reply count and percentage"
+    echo "    forwarded            Forward count and percentage"
+    echo "    active-sender        Most active sender"
+    echo "    night-activity       Messages after 18:00"
+    echo "    all                  All metrics"
+    echo ""
+    echo "  Examples:"
+    echo "    ameni tg get ./result.json total-messages"
+    echo "    ameni tg get ./result.json avg-response-time"
+    echo "    ameni tg get ./result.json all"
+    exit 2
+  fi
+  _run_node "$file" get "$metric"
+}
+
+# ---------------------------------------------------------------------------
+#  chart — ASCII chart rendering
+# ---------------------------------------------------------------------------
+_cmd_chart() {
+  local file="${1:-}"
+  local chart="${2:-}"
+  if [ -z "$file" ] || [ -z "$chart" ]; then
+    _error "Usage: ameni tg chart <result.json> <chart-name>"
+    echo ""
+    echo "  Available charts:"
+    echo "    messages-over-time     Messages per day histogram"
+    echo "    activity-by-hour       Messages by hour (0-23)"
+    echo "    activity-by-weekday    Messages by day of week"
+    echo "    monthly-activity       Messages per month"
+    echo "    top-senders            Top senders bar chart"
+    echo "    message-length         Length distribution"
+    echo "    media-breakdown        Media type distribution"
+    echo "    top-emojis             Top emojis"
+    echo "    most-replied-to        Who gets most replies"
+    echo "    heatmap-hours          Heatmap by hour"
+    echo ""
+    echo "  Example: ameni tg chart ./result.json activity-by-hour"
+    exit 2
+  fi
+  _run_node "$file" chart "$chart"
+}
+
+# ---------------------------------------------------------------------------
+#  list — available metrics and charts
+# ---------------------------------------------------------------------------
+_cmd_list() {
+  local file="${1:-}"
+  if [ -z "$file" ]; then
+    _error "Usage: ameni tg list <result.json>"
+    echo "  Shows all available metrics and charts for a given file."
+    exit 2
+  fi
+  _run_node "$file" list
+}
+
+# ---------------------------------------------------------------------------
+#  json — full data as JSON
+# ---------------------------------------------------------------------------
+_cmd_json() {
+  local file="${1:-}"
+  if [ -z "$file" ]; then _error "Usage: ameni tg json <result.json>"; exit 2; fi
+  _run_node "$file" json
+}
+
+# ---------------------------------------------------------------------------
+#  about
+# ---------------------------------------------------------------------------
 _cmd_about() {
-  echo
-  echo "Ameni TG Parser"
-  echo "Telegram Chat Analyzer"
-  echo "${AMENI_REPO_URL}"
-  echo
-  echo "Platforms: Arch Linux (bash) / Windows (Git Bash, WSL, pwsh)"
-  echo
-  echo "Commands:"
-  echo "  stats <file>     Full chat statistics"
-  echo "  top <file>       Top message senders"
-  echo "  activity <file>  Activity by hour and weekday"
-  echo "  media <file>     Media type distribution"
-  echo "  about            Display this information"
-  echo "  help             Show detailed help"
-  echo
-  echo "Usage:"
-  echo "  ameni tg stats ./result.json"
-  echo "  ameni tg top ./result.json"
-  echo "  ameni tg activity ./result.json"
-  echo "  ameni tg media ./result.json"
-  echo
-  echo "Arch Linux:"
-  echo "  sudo pacman -S nodejs npm"
   echo ""
-  echo "Windows:"
-  echo "  winget install OpenJS.NodeJS"
-  echo "  # Or download from https://nodejs.org"
-  echo "  # Run from Git Bash or WSL"
+  echo "Ameni TG Parser"
+  echo "Telegram Chat Analyzer — cross-platform CLI agent"
+  echo "${AMENI_REPO_URL}"
+  echo ""
+  echo "Commands:"
+  echo "  stats <file>          Full statistics report"
+  echo "  get <file> <metric>   Specific metric"
+  echo "  chart <file> <name>   ASCII chart rendering"
+  echo "  top <file>            Top senders with bar chart"
+  echo "  activity <file>       Activity by hour and weekday"
+  echo "  media <file>          Media type distribution"
+  echo "  json <file>           Full data as JSON"
+  echo "  list <file>           Available metrics and charts"
+  echo "  about                 Display this information"
+  echo "  help                  Show detailed help"
+  echo ""
+  echo "Arch Linux:  pacman -S nodejs npm"
+  echo "Windows:     winget install OpenJS.NodeJS"
 }
 
 _cmd_help() {
-  echo
+  echo ""
   echo -e "${CLR_BOLD}NAME${CLR_RESET}"
   echo "  ameni tg - Telegram Chat Analyzer Agent (cross-platform)"
-  echo
+  echo ""
   echo -e "${CLR_BOLD}SYNOPSIS${CLR_RESET}"
   echo "  ameni tg stats <file>"
+  echo "  ameni tg get <file> <metric>"
+  echo "  ameni tg chart <file> <name>"
   echo "  ameni tg top <file>"
   echo "  ameni tg activity <file>"
   echo "  ameni tg media <file>"
+  echo "  ameni tg json <file>"
+  echo "  ameni tg list <file>"
   echo "  ameni tg about"
   echo "  ameni tg help"
-  echo
+  echo ""
   echo -e "${CLR_BOLD}COMMANDS${CLR_RESET}"
-  echo
-  echo -e "  ${CLR_GREEN}stats${CLR_RESET}"
-  echo "    Usage:   ameni tg stats <result.json>"
-  echo "    Purpose: Full chat statistics: message count, participants,"
-  echo "             date range, average length, top senders, media."
-  echo "    Example: ameni tg stats ./export/result.json"
-  echo
-  echo -e "  ${CLR_GREEN}top${CLR_RESET}"
-  echo "    Usage:   ameni tg top <result.json>"
-  echo "    Purpose: Top 10 message senders with bar chart."
-  echo "    Example: ameni tg top ./export/result.json"
-  echo
-  echo -e "  ${CLR_GREEN}activity${CLR_RESET}"
-  echo "    Usage:   ameni tg activity <result.json>"
-  echo "    Purpose: Message distribution by hour of day and weekday."
-  echo "    Example: ameni tg activity ./export/result.json"
-  echo
-  echo -e "  ${CLR_GREEN}media${CLR_RESET}"
-  echo "    Usage:   ameni tg media <result.json>"
-  echo "    Purpose: Media distribution: photos, videos, stickers, GIFs."
-  echo "    Example: ameni tg media ./export/result.json"
-  echo
-  echo -e "  ${CLR_GREEN}about${CLR_RESET}"
-  echo "    Purpose: Display agent information."
-  echo
-  echo -e "${CLR_BOLD}REQUIREMENTS${CLR_RESET}"
+  echo ""
+  echo -e "  ${CLR_GREEN}stats <file>${CLR_RESET}"
+  echo "    Full report: messages, participants, period, length,"
+  echo "    top senders, media, forwards, replies, emojis, activity."
+  echo "    Example: ameni tg stats ./result.json"
+  echo ""
+  echo -e "  ${CLR_GREEN}get <file> <metric>${CLR_RESET}"
+  echo "    Single metric. Run 'ameni tg list <file>' for all options."
+  echo "    Examples:"
+  echo "      ameni tg get ./result.json avg-response-time"
+  echo "      ameni tg get ./result.json top-senders"
+  echo "      ameni tg get ./result.json emojis-used"
+  echo ""
+  echo -e "  ${CLR_GREEN}chart <file> <name>${CLR_RESET}"
+  echo "    ASCII chart. Run 'ameni tg list <file>' for all options."
+  echo "    Examples:"
+  echo "      ameni tg chart ./result.json activity-by-hour"
+  echo "      ameni tg chart ./result.json messages-over-time"
+  echo "      ameni tg chart ./result.json top-senders"
+  echo ""
+  echo -e "  ${CLR_GREEN}top <file>${CLR_RESET}"
+  echo "    Top senders with ASCII bar chart."
+  echo "    Example: ameni tg top ./result.json"
+  echo ""
+  echo -e "  ${CLR_GREEN}activity <file>${CLR_RESET}"
+  echo "    Messages by hour (0-23) and weekday (Sun-Sat)."
+  echo "    Example: ameni tg activity ./result.json"
+  echo ""
+  echo -e "  ${CLR_GREEN}media <file>${CLR_RESET}"
+  echo "    Media distribution: photos, videos, stickers, GIFs."
+  echo "    Example: ameni tg media ./result.json"
+  echo ""
+  echo -e "  ${CLR_GREEN}json <file>${CLR_RESET}"
+  echo "    Full analyzed data as JSON (pipe to jq for filtering)."
+  echo "    Example: ameni tg json ./result.json | jq '.topSenders'"
+  echo ""
+  echo -e "  ${CLR_GREEN}list <file>${CLR_RESET}"
+  echo "    Show all available metrics and charts for a file."
+  echo ""
+  echo -e "${CLR_BOLD}CROSS-PLATFORM${CLR_RESET}"
   echo "  Arch Linux:  pacman -S nodejs npm"
-  echo "  Windows:     winget install OpenJS.NodeJS (or https://nodejs.org)"
-  echo "  macOS:       brew install node"
-  echo "  All:         Requires Node.js 14+"
-  echo
-  echo -e "${CLR_BOLD}EXIT STATUS${CLR_RESET}"
-  echo "  0  Success"
-  echo "  1  Runtime error"
-  echo "  2  Invalid argument"
-  echo
+  echo "  Windows:     winget install OpenJS.NodeJS (or Git Bash)"
+  echo ""
   echo -e "${CLR_BOLD}REFERENCE${CLR_RESET}"
   echo "  ${AMENI_REPO_URL}"
-  echo
+  echo ""
 }
 
+# ---------------------------------------------------------------------------
 command="${1:-help}"
 shift 2>/dev/null || true
 
 case "$command" in
   stats)    _cmd_stats "$@" ;;
+  get)      _cmd_get "$@" ;;
+  chart)    _cmd_chart "$@" ;;
   top)      _cmd_top "$@" ;;
   activity) _cmd_activity "$@" ;;
   media)    _cmd_media "$@" ;;
+  json)     _cmd_json "$@" ;;
+  list)     _cmd_list "$@" ;;
   about)    _cmd_about ;;
   help|--help|-h|*) _cmd_help ;;
 esac

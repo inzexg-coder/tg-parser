@@ -352,14 +352,147 @@ ameni tg about
 
 ## Команды агента
 
-| Команда | Описание | Arch Linux | Windows |
-|---------|----------|-----------|---------|
-| `stats <file>` | Полная статистика чата | `ameni tg stats result.json` | `.ameni/bin/ameni.ps1 stats result.json` |
-| `top <file>` | Топ отправителей | `ameni tg top result.json` | `.ameni/bin/ameni.ps1 top result.json` |
-| `activity <file>` | Активность по часам/дням | `ameni tg activity result.json` | `.ameni/bin/ameni.ps1 activity result.json` |
-| `media <file>` | Распределение медиа | `ameni tg media result.json` | `.ameni/bin/ameni.ps1 media result.json` |
-| `about` | Информация об агенте | `ameni tg about` | `.ameni/bin/ameni.ps1 about` |
-| `help` | Подробная справка | `ameni tg help` | `.ameni/bin/ameni.ps1 help` |
+
+### ameni tg stats
+
+**Полный отчёт.** Все метрики чата: сообщения, участники, период, длина, топ отправителей, медиа, пересылки, ответы, эмодзи, активность.
+
+```
+$ ameni tg stats ./result.json
+
+Chat:          Проектный чат
+Period:        2024-03-10 - 2025-05-28
+Participants:  14
+Messages:      12,431
+Avg length:    71.8 chars
+Avg per day:   34.2
+Media msgs:    2,197 (17.7%)
+Forwards:      342 (2.8%)
+Replies:       1,890 (15.2%)
+Avg response:  1h 23m 45s
+Total emojis:  3,456
+```
+
+### ameni tg get
+
+**Любая метрика отдельно.** Позволяет запросить конкретный показатель.
+
+```bash
+ameni tg get ./result.json total-messages
+ameni tg get ./result.json avg-response-time
+ameni tg get ./result.json top-senders
+ameni tg get ./result.json emojis-used
+ameni tg get ./result.json media-messages
+ameni tg get ./result.json all
+```
+
+Доступные метрики:
+| Метрика | Вывод |
+|---------|-------|
+| `total-messages` | Общее количество, даты, продолжительность |
+| `participants` | Число участников, доля топ-2 |
+| `top-senders` | Топ-20 отправителей с процентами |
+| `messages-per-day` | Среднее в день, пиковый день |
+| `total-chars` | Символы, слова, уникальные слова |
+| `avg-message-length` | Средняя и максимальная длина |
+| `media-messages` | Количество и доля медиа по типам |
+| `avg-response-time` | Среднее время ответа |
+| `emojis-used` | Всего эмодзи, топ-10 |
+| `replies` | Количество и доля ответов |
+| `forwarded` | Количество и доля пересланных |
+| `active-sender` | Самый активный участник |
+| `night-activity` | Сообщения после 18:00 |
+
+### ameni tg chart
+
+**ASCII-графики в терминале.** Визуализация любой метрики.
+
+```bash
+ameni tg chart ./result.json activity-by-hour
+ameni tg chart ./result.json messages-over-time
+ameni tg chart ./result.json top-senders
+ameni tg chart ./result.json media-breakdown
+```
+
+**Пример вывода activity-by-hour:**
+```
+ 0:00    123  ███████
+ 8:00     45  ██
+ 9:00    234  ████████████
+10:00    567  ███████████████████████████
+11:00    891  ████████████████████████████████████████████
+12:00    612  ██████████████████████████
+...
+```
+
+Доступные графики:
+| График | Описание |
+|--------|----------|
+| `messages-over-time` | Сообщения по дням |
+| `activity-by-hour` | Активность по часам (0-23) |
+| `activity-by-weekday` | Активность по дням недели |
+| `monthly-activity` | Активность по месяцам |
+| `top-senders` | Топ отправителей |
+| `message-length` | Распределение длины |
+| `media-breakdown` | Типы медиа |
+| `top-emojis` | Топ эмодзи |
+| `most-replied-to` | Кому отвечают чаще |
+| `heatmap-hours` | Тепловая карта часов |
+
+### ameni tg top
+
+**Топ-20 отправителей** с ASCII-гистограммой.
+
+### ameni tg activity
+
+**Распределение по часам** (0-23) **и дням недели** (Sun-Sat).
+
+### ameni tg media
+
+**Распределение типов медиа:** photo, video, sticker, gif, document.
+
+### ameni tg json
+
+**Полные данные в JSON.** Удобно для обработки через `jq`.
+
+```bash
+ameni tg json ./result.json | jq '.topSenders[:3]'
+ameni tg json ./result.json | jq '.hours'
+```
+
+### ameni tg list
+
+**Список всех доступных метрик и графиков** для переданного файла.
+
+```
+$ ameni tg list ./result.json
+
+Available metrics (ameni tg get <metric>):
+  total-messages            Total messages and chat duration in days
+  participants              Number of participants
+  ...
+
+Available charts (ameni tg chart <name>):
+  activity-by-hour          Messages by hour of day (0-23)
+  top-senders               Top senders bar chart
+  ...
+```
+
+### Соответствие команд
+
+| Команда | Arch Linux | Windows (PowerShell) |
+|---------|-----------|---------------------|
+| stats | `ameni tg stats file` | `.ameni/bin/ameni.ps1 stats file` |
+| get | `ameni tg get file metric` | `.ameni/bin/ameni.ps1 get file metric` |
+| chart | `ameni tg chart file name` | `.ameni/bin/ameni.ps1 chart file name` |
+| top | `ameni tg top file` | `.ameni/bin/ameni.ps1 top file` |
+| activity | `ameni tg activity file` | `.ameni/bin/ameni.ps1 activity file` |
+| media | `ameni tg media file` | `.ameni/bin/ameni.ps1 media file` |
+| json | `ameni tg json file` | `.ameni/bin/ameni.ps1 json file` |
+| list | `ameni tg list file` | `.ameni/bin/ameni.ps1 list file` |
+| about | `ameni tg about` | `.ameni/bin/ameni.ps1 about` |
+| help | `ameni tg help` | `.ameni/bin/ameni.ps1 help` |
+
 
 ---
 
