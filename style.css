@@ -215,3 +215,4 @@ transition: all 0.15s; color: var(--text-dim);
 .stat-card .stat-value { font-size: 17px; }
 .upload-section { padding: 32px 0; }
 }
+.hidden { display: none !important; }
