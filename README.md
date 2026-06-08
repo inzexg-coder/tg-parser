@@ -52,7 +52,7 @@
 | **Active Sender** | Самый активный участник и его доля от всех сообщений |
 | **Night Activity** | Доля сообщений после 18:00 |
 
-<sup>*Для заполнения — добавьте скриншот панели обзора*</sup>
+<p align="center"><img src="images/stats-grid.jpg" alt="Stats Grid" width="80%"></p>
 
 <br>
 
@@ -62,98 +62,98 @@
 <summary>Messages Over Time — линейный график</summary>
 Количество сообщений по дням за весь период чата. Позволяет визуально оценить динамику: спады, всплески, периоды затишья. Каждая точка — один день. График строится на основе perDay.
 
-<sup>*Для заполнения — добавьте скриншот графика*</sup>
+<p align="center"><img src="images/messages-over-time.jpg" alt="Messages Over Time" width="80%"></p>
 </details>
 
 <details>
 <summary>Activity by Hour — столбчатая диаграмма</summary>
 Распределение сообщений по 24 часам суток. Показывает, в какое время участники наиболее активны. perHour[0..23] — абсолютные значения.
 
-<sup>*Для заполнения — добавьте скриншот*</sup>
+<p align="center"><img src="images/activity-by-hour.jpg" alt="Chart" width="80%"></p>
 </details>
 
 <details>
 <summary>Activity by Day of Week — столбчатая диаграмма</summary>
 Распределение по дням недели (Sun–Sat). Показывает, какие дни самые активные. perWeekday[0..6].
 
-<sup>*Для заполнения — добавьте скриншот*</sup>
+<p align="center"><img src="images/activity-by-weekday.jpg" alt="Chart" width="80%"></p>
 </details>
 
 <details>
 <summary>Monthly Activity — столбчатая диаграмма</summary>
 Количество сообщений по месяцам (YYYY-MM). Позволяет увидеть долгосрочную динамику. perMonth.
 
-<sup>*Для заполнения — добавьте скриншот*</sup>
+<p align="center"><img src="images/monthly-activity.jpg" alt="Chart" width="80%"></p>
 </details>
 
 <details>
 <summary>Participants Activity — столбчатая диаграмма</summary>
 Топ отправителей по количеству сообщений. Каждый столбец — участник, высота — число сообщений. topSenders[0..N].
 
-<sup>*Для заполнения — добавьте скриншот*</sup>
+<p align="center"><img src="images/participants-activity.jpg" alt="Chart" width="80%"></p>
 </details>
 
 <details>
 <summary>Message Length Distribution — столбчатая диаграмма</summary>
 Распределение длины сообщений по группам: 1–10, 11–50, 51–100, 101–500, 501+ символов. lenDist.
 
-<sup>*Для заполнения — добавьте скриншот*</sup>
+<p align="center"><img src="images/top-messages.jpg" alt="Chart" width="80%"></p>
 </details>
 
 <details>
 <summary>Response Time Distribution — столбчатая диаграмма</summary>
 Распределение времени ответа между разными участниками. respTimes — массив секунд. Показывает, как быстро обычно отвечают в чате.
 
-<sup>*Для заполнения — добавьте скриншот*</sup>
+
 </details>
 
 <details>
 <summary>Top Emojis — столбчатая диаграмма</summary>
 Топ-20 самых используемых эмодзи. topEmojis[0..19].
 
-<sup>*Для заполнения — добавьте скриншот*</sup>
+
 </details>
 
 <details>
 <summary>Media Type Breakdown — кольцевая диаграмма</summary>
 Распределение типов медиа: photo, video, sticker, gif, document, voice. mediaTypes.
 
-<sup>*Для заполнения — добавьте скриншот*</sup>
+
 </details>
 
 <details>
 <summary>Most Replied To — столбчатая диаграмма</summary>
 Участники, чьи сообщения чаще всего получают ответы. topRepliedTo[0..10] — косвенный показатель вовлечённости.
 
-<sup>*Для заполнения — добавьте скриншот*</sup>
+
 </details>
 
 <details>
 <summary>Cumulative Messages — линейный график</summary>
 Накопленное количество сообщений от начала чата. Показывает общий рост чата во времени. sortedByTime.
 
-<sup>*Для заполнения — добавьте скриншот*</sup>
+
 </details>
 
 <details>
 <summary>Messages per Sender — кольцевая диаграмма</summary>
 Доля каждого участника в общем количестве сообщений. topSenders.
 
-<sup>*Для заполнения — добавьте скриншот*</sup>
+
 </details>
 
 <details>
 <summary>Heatmap — тепловая карта активности</summary>
 Тепловая карта «часы × дни». Цвет ячейки — интенсивность сообщений в указанный час указанного дня. Позволяет увидеть паттерны активности на больших периодах.
 
-<sup>*Для заполнения — добавьте скриншот*</sup>
+
 </details>
 
 <details>
 <summary>Top Words — облако тегов (Word Cloud)</summary>
 50 самых частых слов после фильтрации стоп-слов. topWords[0..50]. Размер слова пропорционален частоте использования в чате.
 
-<sup>*Для заполнения — добавьте скриншот*</sup>
+
 </details>
 
 <br>
