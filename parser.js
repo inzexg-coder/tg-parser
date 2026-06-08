@@ -256,13 +256,21 @@ function analyze(messages, chatTitle, chatType) {
 
 function render(stats) {
   DOM.loading.classList.add('hidden');
+  DOM.error.classList.add('hidden');
   DOM.results.classList.remove('hidden');
   DOM.chatTitle.textContent = stats.chatTitle;
   DOM.chatType.textContent = stats.chatType === 'group' ? 'Group' : 'Personal';
   DOM.msgCount.textContent = formatNumber(stats.total) + ' msgs';
+  DOM.fileIndicator.textContent = formatNumber(stats.total) + ' messages';
   renderStatsGrid(stats);
   renderCharts(stats);
-  
+  document.querySelectorAll('.chart-panel').forEach(p => p.style.display = '');
+  document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
+  const overviewTab = document.querySelector('.nav-item[data-tab="overview"]');
+  if (overviewTab) overviewTab.classList.add('active');
+  document.querySelectorAll('.chart-panel').forEach(p => {
+    if (p.dataset.tab !== 'overview') p.style.display = 'none';
+  });
 }
 
 function renderStatsGrid(stats) {
@@ -281,8 +289,12 @@ function renderStatsGrid(stats) {
     { label: 'Night Activity', value: stats.nightPct + '%', sub: formatNumber(stats.nightMsgs) + ' messages after 18:00', cls: 'accent-orange' },
   ];
   DOM.statsGrid.innerHTML = cards.map(c =>
-    `<div class="stat-card ${c.cls}"><div class="stat-label">${c.label}</div><div class="stat-value">${c.value}</div><div class="stat-sublabel">${c.sub}</div></div>`
+    '<div class="stat-card ' + c.cls + '"><div class="stat-label">' + c.label + '</div><div class="stat-value">' + c.value + '</div><div class="stat-sublabel">' + c.sub + '</div></div>'
   ).join('');
+  Array.from(DOM.statsGrid.children).forEach((card, i) => {
+    card.style.setProperty('--i', i);
+    setTimeout(() => card.classList.add('visible'), 50 + i * 40);
+  });
   function topSendersNote(s) {
     if (s.topSenders.length < 2) return '';
     const u1 = s.topSenders[0].sender, u2 = s.topSenders[1].sender;
@@ -544,18 +556,20 @@ function addWordCloud(cc, title, words) {
 }
 
 function initTabs() {
-  DOM.tabs.forEach(tab => {
-    tab.addEventListener('click', (e) => {
-      e.preventDefault();
-      DOM.tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      const target = tab.dataset.tab;
-      document.querySelectorAll('.chart-panel').forEach(p => {
-        p.style.display = 'block';
-        if (target !== 'overview' && p.dataset.tab !== target) {
-          p.style.display = 'none';
-        }
-      });
+  const nav = document.querySelector('.side-nav');
+  if (!nav) return;
+  nav.addEventListener('click', (e) => {
+    const item = e.target.closest('.nav-item');
+    if (!item) return;
+    e.preventDefault();
+    document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
+    item.classList.add('active');
+    const target = item.dataset.tab;
+    document.querySelectorAll('.chart-panel').forEach(p => {
+      p.style.display = '';
+      if (target !== 'overview' && p.dataset.tab !== target) {
+        p.style.display = 'none';
+      }
     });
   });
 }
