@@ -292,6 +292,22 @@ function renderStatsGrid(stats) {
   }
 }
 
+function observeChartPanel(panel) {
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          panel.classList.add('visible');
+          obs.unobserve(panel);
+        }
+      });
+    }, { threshold: 0.05 });
+    obs.observe(panel);
+  } else {
+    setTimeout(() => panel.classList.add('visible'), 100);
+  }
+}
+
 function renderCharts(stats) {
   const cc = DOM.chartsContainer;
   cc.innerHTML = '';
@@ -323,7 +339,9 @@ function addChart(cc, title, data, type) {
   canvas.className = 'chart-canvas';
   panel.appendChild(canvas);
   cc.appendChild(panel);
-  new Chart(canvas, { type, data, options: chartOptions(type, data) });
+  observeChartPanel(panel);
+  const chart = new Chart(canvas, { type, data, options: chartOptions(type, data) });
+  panel._chart = chart;
 }
 
 function determineTab(title) {
@@ -465,6 +483,7 @@ function addHeatmap(cc, title, messages) {
   const panel = document.createElement('div');
   panel.className = 'chart-panel';
   panel.dataset.tab = 'activity';
+  observeChartPanel(panel);
   const h3 = document.createElement('h3');
   h3.textContent = title;
   panel.appendChild(h3);
@@ -503,6 +522,7 @@ function addWordCloud(cc, title, words) {
   const panel = document.createElement('div');
   panel.className = 'chart-panel';
   panel.dataset.tab = 'content';
+  observeChartPanel(panel);
   const h3 = document.createElement('h3');
   h3.textContent = title;
   panel.appendChild(h3);
