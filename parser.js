@@ -177,9 +177,6 @@ function analyze(messages, chatTitle, chatType) {
   const weekendMsgs = messages.filter(m => m.dayOfWeek === 0 || m.dayOfWeek === 6).length;
   const weekdayMsgs = messages.filter(m => m.dayOfWeek >= 1 && m.dayOfWeek <= 5).length;
   const replies = messages.filter(m => m.replyTo !== null).length;
-  const replyToCount = {};
-  messages.forEach(m => { if (m.replyTo !== null) repTo[m.sender] = (repTo[m.sender] || 0) + 1; });
-  const replyTo = messages.filter(m => m.replyTo !== null);
   const replyTargets = {};
   messages.forEach(m => {
     if (m.replyTo !== null) {
