@@ -1,0 +1,203 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+readonly AMENI_HOME="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+readonly AMENI_REPO_URL="https://github.com/inzexg-coder/tg-parser"
+readonly AMENI_LIB="$AMENI_HOME/lib/telegram.js"
+
+readonly CLR_RESET='\033[0m'
+readonly CLR_RED='\033[0;31m'
+readonly CLR_GREEN='\033[0;32m'
+readonly CLR_YELLOW='\033[1;33m'
+readonly CLR_CYAN='\033[0;36m'
+readonly CLR_BOLD='\033[1m'
+readonly CLR_DIM='\033[2m'
+
+_info()   { echo -e "${CLR_GREEN}[INFO]${CLR_RESET}  $*"; }
+_warn()   { echo -e "${CLR_YELLOW}[WARN]${CLR_RESET}  $*"; }
+_error()  { echo -e "${CLR_RED}[ERROR]${CLR_RESET} $*" >&2; }
+
+_require_file() {
+  if [ ! -f "$1" ]; then
+    _error "File not found: $1"
+    exit 1
+  fi
+}
+
+_require_node() {
+  if ! command -v node &>/dev/null; then
+    _error "Node.js is required. Install from https://nodejs.org"
+    exit 1
+  fi
+}
+
+# ---------------------------------------------------------------------------
+#  stats
+# ---------------------------------------------------------------------------
+_cmd_stats() {
+  local file="${1:-}"
+  if [ -z "$file" ]; then
+    _error "Usage: ameni tg stats <result.json>"
+    echo "  Parse a Telegram export JSON and show full chat statistics."
+    echo "  Example: ameni tg stats ./result.json"
+    exit 2
+  fi
+  _require_file "$file"
+  _require_node
+  _info "File: $file"
+  echo
+  node "$AMENI_LIB" "$file" stats
+}
+
+# ---------------------------------------------------------------------------
+#  top
+# ---------------------------------------------------------------------------
+_cmd_top() {
+  local file="${1:-}"
+  if [ -z "$file" ]; then
+    _error "Usage: ameni tg top <result.json>"
+    echo "  Show top message senders in a Telegram chat export."
+    echo "  Example: ameni tg top ./result.json"
+    exit 2
+  fi
+  _require_file "$file"
+  _require_node
+  _info "File: $file"
+  echo
+  node "$AMENI_LIB" "$file" top
+}
+
+# ---------------------------------------------------------------------------
+#  activity
+# ---------------------------------------------------------------------------
+_cmd_activity() {
+  local file="${1:-}"
+  if [ -z "$file" ]; then
+    _error "Usage: ameni tg activity <result.json>"
+    echo "  Show message activity patterns: by hour and by weekday."
+    echo "  Example: ameni tg activity ./result.json"
+    exit 2
+  fi
+  _require_file "$file"
+  _require_node
+  _info "File: $file"
+  echo
+  node "$AMENI_LIB" "$file" activity
+}
+
+# ---------------------------------------------------------------------------
+#  media
+# ---------------------------------------------------------------------------
+_cmd_media() {
+  local file="${1:-}"
+  if [ -z "$file" ]; then
+    _error "Usage: ameni tg media <result.json>"
+    echo "  Show media distribution (photos, videos, stickers, etc.)"
+    echo "  Example: ameni tg media ./result.json"
+    exit 2
+  fi
+  _require_file "$file"
+  _require_node
+  _info "File: $file"
+  echo
+  node "$AMENI_LIB" "$file" media
+}
+
+# ---------------------------------------------------------------------------
+#  about
+# ---------------------------------------------------------------------------
+_cmd_about() {
+  echo
+  echo "Ameni TG"
+  echo "Telegram Chat Analyzer"
+  echo "${AMENI_REPO_URL}"
+  echo
+  echo "Commands:"
+  echo "  stats <file>     Full chat statistics"
+  echo "  top <file>       Top message senders"
+  echo "  activity <file>  Activity by hour and weekday"
+  echo "  media <file>     Media type distribution"
+  echo "  about            Display this information"
+  echo "  help             Show detailed help"
+  echo
+  echo "Usage:"
+  echo "  ameni tg stats ./result.json"
+  echo "  ameni tg top ./result.json"
+  echo "  ameni tg activity ./result.json"
+  echo "  ameni tg media ./result.json"
+}
+
+# ---------------------------------------------------------------------------
+#  help
+# ---------------------------------------------------------------------------
+_cmd_help() {
+  echo
+  echo -e "${CLR_BOLD}NAME${CLR_RESET}"
+  echo "  ameni tg - Telegram Chat Analyzer Agent"
+  echo
+  echo -e "${CLR_BOLD}SYNOPSIS${CLR_RESET}"
+  echo "  ameni tg stats <file>"
+  echo "  ameni tg top <file>"
+  echo "  ameni tg activity <file>"
+  echo "  ameni tg media <file>"
+  echo "  ameni tg about"
+  echo "  ameni tg help"
+  echo
+  echo -e "${CLR_BOLD}COMMANDS${CLR_RESET}"
+  echo
+  echo -e "  ${CLR_GREEN}stats${CLR_RESET}"
+  echo "    Usage:   ameni tg stats <result.json>"
+  echo "    Purpose: Show full chat statistics: message count,"
+  echo "             participants, date range, average length,"
+  echo "             top senders, media distribution."
+  echo "    Args:    result.json    Path to Telegram export JSON"
+  echo "    Example: ameni tg stats ./export/result.json"
+  echo
+  echo -e "  ${CLR_GREEN}top${CLR_RESET}"
+  echo "    Usage:   ameni tg top <result.json>"
+  echo "    Purpose: Show top 10 message senders with bar chart."
+  echo "    Args:    result.json    Path to Telegram export JSON"
+  echo "    Example: ameni tg top ./export/result.json"
+  echo
+  echo -e "  ${CLR_GREEN}activity${CLR_RESET}"
+  echo "    Usage:   ameni tg activity <result.json>"
+  echo "    Purpose: Show message distribution by hour of day"
+  echo "             and by day of week."
+  echo "    Args:    result.json    Path to Telegram export JSON"
+  echo "    Example: ameni tg activity ./export/result.json"
+  echo
+  echo -e "  ${CLR_GREEN}media${CLR_RESET}"
+  echo "    Usage:   ameni tg media <result.json>"
+  echo "    Purpose: Show media type distribution: photos,"
+  echo "             videos, stickers, GIFs, documents."
+  echo "    Args:    result.json    Path to Telegram export JSON"
+  echo "    Example: ameni tg media ./export/result.json"
+  echo
+  echo -e "  ${CLR_GREEN}about${CLR_RESET}"
+  echo "    Usage:   ameni tg about"
+  echo "    Purpose: Display agent information and command overview."
+  echo
+  echo -e "${CLR_BOLD}EXIT STATUS${CLR_RESET}"
+  echo "  0  Success"
+  echo "  1  Runtime error"
+  echo "  2  Invalid argument"
+  echo
+  echo -e "${CLR_BOLD}REFERENCE${CLR_RESET}"
+  echo "  ${AMENI_REPO_URL}"
+  echo
+}
+
+# ---------------------------------------------------------------------------
+#  Main
+# ---------------------------------------------------------------------------
+command="${1:-help}"
+shift 2>/dev/null || true
+
+case "$command" in
+  stats)    _cmd_stats "$@" ;;
+  top)      _cmd_top "$@" ;;
+  activity) _cmd_activity "$@" ;;
+  media)    _cmd_media "$@" ;;
+  about)    _cmd_about ;;
+  help|--help|-h|*) _cmd_help ;;
+esac
