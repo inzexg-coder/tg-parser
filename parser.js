@@ -1,4 +1,4 @@
-(() => {
+(function () {
 const fileInput = document.getElementById('fileInput');
 const fileNameSpan = document.getElementById('fileName');
 const loadingEl = document.getElementById('loading');
@@ -356,7 +356,7 @@ return `${label}: ${value} (${percentage})`;
 }
 }}
 }
-}
+}});
 // Chart 6: Response time distribution
 const respChartCtx = document.createElement('canvas');
 respChartCtx.className = 'chart-canvas';
