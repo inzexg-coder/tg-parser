@@ -25,7 +25,6 @@ function cacheDOM() {
   DOM.statsGrid = document.getElementById('statsGrid');
   DOM.chartsContainer = document.getElementById('chartsContainer');
   /* DOM.rawStats removed */
-  DOM.tabs = document.querySelectorAll('.nav-item');
 }
 
 function showError(msg) {
@@ -264,13 +263,6 @@ function render(stats) {
   DOM.fileIndicator.textContent = formatNumber(stats.total) + ' messages';
   renderStatsGrid(stats);
   renderCharts(stats);
-  document.querySelectorAll('.chart-panel').forEach(p => p.style.display = '');
-  document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
-  const overviewTab = document.querySelector('.nav-item[data-tab="overview"]');
-  if (overviewTab) overviewTab.classList.add('active');
-  document.querySelectorAll('.chart-panel').forEach(p => {
-    if (p.dataset.tab !== 'overview') p.style.display = 'none';
-  });
 }
 
 function renderStatsGrid(stats) {
@@ -343,7 +335,6 @@ function addChart(cc, title, data, type) {
   if (!data) return;
   const panel = document.createElement('div');
   panel.className = 'chart-panel';
-  panel.dataset.tab = determineTab(title);
   const h3 = document.createElement('h3');
   h3.textContent = title;
   panel.appendChild(h3);
@@ -354,14 +345,6 @@ function addChart(cc, title, data, type) {
   observeChartPanel(panel);
   const chart = new Chart(canvas, { type, data, options: chartOptions(type, data) });
   panel._chart = chart;
-}
-
-function determineTab(title) {
-  if (['Messages Over Time', 'Activity by Hour', 'Activity by Day of Week', 'Monthly Activity', 'Activity Heatmap'].includes(title)) return 'activity';
-  if (['Participants Activity', 'Messages per Sender', 'Most Replied To', 'Cumulative Messages'].includes(title)) return 'users';
-  if (['Message Length Distribution', 'Top Emojis', 'Top Words', 'Response Time Distribution'].includes(title)) return 'content';
-  if (['Media Type Breakdown'].includes(title)) return 'media';
-  return 'overview';
 }
 
 let chartInstances = [];
@@ -494,7 +477,6 @@ function addHeatmap(cc, title, messages) {
   if (!messages || messages.length === 0) return;
   const panel = document.createElement('div');
   panel.className = 'chart-panel';
-  panel.dataset.tab = 'activity';
   observeChartPanel(panel);
   const h3 = document.createElement('h3');
   h3.textContent = title;
@@ -533,7 +515,6 @@ function addWordCloud(cc, title, words) {
   if (!words || words.length === 0) return;
   const panel = document.createElement('div');
   panel.className = 'chart-panel';
-  panel.dataset.tab = 'content';
   observeChartPanel(panel);
   const h3 = document.createElement('h3');
   h3.textContent = title;
@@ -555,29 +536,10 @@ function addWordCloud(cc, title, words) {
   cc.appendChild(panel);
 }
 
-function initTabs() {
-  const nav = document.querySelector('.side-nav');
-  if (!nav) return;
-  nav.addEventListener('click', (e) => {
-    const item = e.target.closest('.nav-item');
-    if (!item) return;
-    e.preventDefault();
-    document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
-    item.classList.add('active');
-    const target = item.dataset.tab;
-    document.querySelectorAll('.chart-panel').forEach(p => {
-      p.style.display = '';
-      if (target !== 'overview' && p.dataset.tab !== target) {
-        p.style.display = 'none';
-      }
-    });
-  });
-}
+
 
 function init() {
   cacheDOM();
-  initTabs();
-
   DOM.uploadZone.addEventListener('click', () => DOM.fileInput.click());
   DOM.uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); DOM.uploadZone.classList.add('dragover'); });
   DOM.uploadZone.addEventListener('dragleave', () => DOM.uploadZone.classList.remove('dragover'));
@@ -590,18 +552,6 @@ function init() {
   DOM.fileInput.addEventListener('change', (e) => {
     if (e.target.files[0]) processFile(e.target.files[0]);
   });
-  const menuBtn = document.getElementById('menuBtn');
-  const sidebar = document.getElementById('sidebar');
-  if (menuBtn && sidebar) {
-    menuBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-    });
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 480 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
-        sidebar.classList.remove('open');
-      }
-    });
-  }
 }
 
 function processFile(file) {
