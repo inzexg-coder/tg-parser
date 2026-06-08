@@ -274,24 +274,54 @@ Media distribution for Проектный чат:
 ### Требования
 
 - **Веб-интерфейс:** любой современный браузер
-- **CLI-агент:** Node.js 14+ и Bash (GfW, WSL, MSYS2)
+- **CLI-агент:** Node.js 14+ и Bash
 
 ### Настройка CLI
 
+**Linux (включая Arch) / macOS:**
+
 ```bash
-git clone https://github.com/inzexg-coder/tg-parser.git
-cd tg-parser
+git clone https://github.com/inzexg-coder/ameni-tg-parser.git
+cd ameni-tg-parser
 export PATH="$PATH:$(pwd)/.ameni/bin"
+ameni tg about
 ```
 
-Для постоянного доступа:
+**Windows (Git for Windows, WSL, MSYS2):**
+
+```powershell
+git clone https://github.com/inzexg-coder/ameni-tg-parser.git
+cd ameni-tg-parser
+$env:PATH += ";$(Get-Location)\.ameniin"
+ameni tg about
+```
+
+### Постоянный доступ (любая платформа)
 
 ```bash
-mkdir -p ~/bin
-cp .ameni/bin/ameni ~/bin/
+sudo ln -s "$(pwd)/.ameni/bin/ameni" /usr/local/bin/ameni
+# или
+mkdir -p ~/bin && cp .ameni/bin/ameni ~/bin/
 ```
 
-Проверка:
+### Arch Linux
+
+**Установка из PKGBUILD:**
+
+```bash
+git clone https://github.com/inzexg-coder/ameni-tg-parser.git
+cd ameni-tg-parser
+makepkg -si
+```
+
+**Зависимости (pacman):**
+
+```bash
+sudo pacman -S nodejs npm
+ameni tg about
+```
+
+**Проверка установки:**
 
 ```bash
 ameni tg about
