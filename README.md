@@ -52,7 +52,6 @@
 | **Active Sender** | Самый активный участник и его доля от всех сообщений |
 | **Night Activity** | Доля сообщений после 18:00 |
 
-<p align="center"><img src="images/stats-grid.jpg" alt="Stats Grid" width="80%"></p>
 
 <br>
 
@@ -62,42 +61,36 @@
 <summary>Messages Over Time — линейный график</summary>
 Количество сообщений по дням за весь период чата. Позволяет визуально оценить динамику: спады, всплески, периоды затишья. Каждая точка — один день. График строится на основе perDay.
 
-<p align="center"><img src="images/messages-over-time.jpg" alt="Messages Over Time" width="80%"></p>
 </details>
 
 <details>
 <summary>Activity by Hour — столбчатая диаграмма</summary>
 Распределение сообщений по 24 часам суток. Показывает, в какое время участники наиболее активны. perHour[0..23] — абсолютные значения.
 
-<p align="center"><img src="images/activity-by-hour.jpg" alt="Chart" width="80%"></p>
 </details>
 
 <details>
 <summary>Activity by Day of Week — столбчатая диаграмма</summary>
 Распределение по дням недели (Sun–Sat). Показывает, какие дни самые активные. perWeekday[0..6].
 
-<p align="center"><img src="images/activity-by-weekday.jpg" alt="Chart" width="80%"></p>
 </details>
 
 <details>
 <summary>Monthly Activity — столбчатая диаграмма</summary>
 Количество сообщений по месяцам (YYYY-MM). Позволяет увидеть долгосрочную динамику. perMonth.
 
-<p align="center"><img src="images/monthly-activity.jpg" alt="Chart" width="80%"></p>
 </details>
 
 <details>
 <summary>Participants Activity — столбчатая диаграмма</summary>
 Топ отправителей по количеству сообщений. Каждый столбец — участник, высота — число сообщений. topSenders[0..N].
 
-<p align="center"><img src="images/participants-activity.jpg" alt="Chart" width="80%"></p>
 </details>
 
 <details>
 <summary>Message Length Distribution — столбчатая диаграмма</summary>
 Распределение длины сообщений по группам: 1–10, 11–50, 51–100, 101–500, 501+ символов. lenDist.
 
-<p align="center"><img src="images/top-messages.jpg" alt="Chart" width="80%"></p>
 </details>
 
 <details>
