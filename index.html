@@ -1,41 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Message Parser</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TG Chat Analyzer</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>Telegram Message Parser</h1>
-        <p>Upload your Telegram chat export (result.json) to get detailed statistics and visualizations.</p>
-        
-        <div class="upload-section">
-            <input type="file" id="fileInput" accept=".json">
-            <label for="fileInput" class="btn">Choose JSON file</label>
-            <span id="fileName" class="filename"></span>
-        </div>
-        
-        <div id="loading" class="hidden">
-            <div class="spinner"></div>
-            <p>Analyzing chat...</p>
-        </div>
-        
-        <div id="results" class="hidden">
-            <div class="stats-grid">
-                <!-- Stats will be populated here -->
-            </div>
-            
-            <div class="charts-container">
-                <!-- Charts will be populated here -->
-            </div>
-        </div>
-        
-        <div id="error" class="hidden alert alert-error"></div>
-    </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="parser.js"></script>
+
+<header class="header">
+<div class="header-inner">
+<div class="logo">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+<span>TG Chat Analyzer</span>
+</div>
+<span class="badge">OSINT</span>
+</div>
+</header>
+
+<main class="main">
+
+<section class="hero">
+<h1>Telegram Chat <span class="gradient">Analyzer</span></h1>
+<p class="subtitle">Upload your Telegram export and get comprehensive chat intelligence with interactive visualizations</p>
+
+<div class="upload-zone" id="uploadZone">
+<input type="file" id="fileInput" accept=".json" hidden>
+<div class="upload-content">
+<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+<p>Drop your <code>result.json</code> here or <span class="link">browse</span></p>
+<span class="hint">Supports Telegram desktop & mobile exports</span>
+</div>
+</div>
+<div id="fileName" class="file-info hidden"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span id="fileNameText"></span></div>
+</section>
+
+<div id="loading" class="hidden">
+<div class="loader">
+<div class="loader-ring"></div>
+<div class="loader-text">
+<p class="loader-title">Analyzing chat</p>
+<p class="loader-detail" id="loaderDetail">Parsing messages...</p>
+</div>
+</div>
+</div>
+
+<div id="error" class="hidden"></div>
+
+<div id="results" class="hidden">
+
+<section class="chat-header">
+<div class="chat-meta">
+<h2 id="chatTitle">Chat</h2>
+<div class="chat-badges">
+<span class="badge badge-type" id="chatType">personal</span>
+<span class="badge badge-msg" id="msgCount">0</span>
+</div>
+</div>
+</section>
+
+<section>
+<div class="stats-grid" id="statsGrid"></div>
+</section>
+
+<section>
+<div class="tabs">
+<button class="tab active" data-tab="overview">Overview</button>
+<button class="tab" data-tab="activity">Activity</button>
+<button class="tab" data-tab="users">Users</button>
+<button class="tab" data-tab="content">Content</button>
+<button class="tab" data-tab="media">Media</button>
+</div>
+<div class="charts-container" id="chartsContainer"></div>
+</section>
+
+<section class="raw-section">
+<details>
+<summary> Raw Data <span class="badge">JSON</span></summary>
+<pre id="rawStats"></pre>
+</details>
+</section>
+
+</div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="parser.js"></script>
 </body>
 </html>
