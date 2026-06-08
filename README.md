@@ -274,12 +274,29 @@ Media distribution for Проектный чат:
 ### Требования
 
 - **Веб-интерфейс:** любой современный браузер
-- **CLI-агент:** Node.js 14+ и Bash
+- **CLI-агент:** Node.js 14+
+
+### Установка Node.js
+
+**Arch Linux:**
+```bash
+sudo pacman -S nodejs npm
+```
+
+**Windows:**
+```powershell
+winget install OpenJS.NodeJS
+# или https://nodejs.org (LTS)
+```
+
+**macOS:**
+```bash
+brew install node
+```
 
 ### Настройка CLI
 
-**Linux (включая Arch) / macOS:**
-
+**Arch Linux / macOS (bash):**
 ```bash
 git clone https://github.com/inzexg-coder/ameni-tg-parser.git
 cd ameni-tg-parser
@@ -287,43 +304,33 @@ export PATH="$PATH:$(pwd)/.ameni/bin"
 ameni tg about
 ```
 
-**Windows (Git for Windows, WSL, MSYS2):**
-
-```powershell
+**Windows (Git Bash / WSL):**
+```bash
 git clone https://github.com/inzexg-coder/ameni-tg-parser.git
 cd ameni-tg-parser
-$env:PATH += ";$(Get-Location)\.ameniin"
+export PATH="$PATH:$(pwd)/.ameni/bin"
 ameni tg about
 ```
 
-### Постоянный доступ (любая платформа)
+**Windows (PowerShell, без bash):**
+```powershell
+git clone https://github.com/inzexg-coder/ameni-tg-parser.git
+cd ameni-tg-parser
+.ameni/bin/ameni.ps1 about
+```
+
+### Постоянный доступ
 
 ```bash
 sudo ln -s "$(pwd)/.ameni/bin/ameni" /usr/local/bin/ameni
-# или
-mkdir -p ~/bin && cp .ameni/bin/ameni ~/bin/
 ```
 
-### Arch Linux
-
-**Установка из PKGBUILD:**
+### Arch Linux (PKGBUILD)
 
 ```bash
 git clone https://github.com/inzexg-coder/ameni-tg-parser.git
 cd ameni-tg-parser
 makepkg -si
-```
-
-**Зависимости (pacman):**
-
-```bash
-sudo pacman -S nodejs npm
-ameni tg about
-```
-
-**Проверка установки:**
-
-```bash
 ameni tg about
 ```
 
@@ -345,26 +352,14 @@ ameni tg about
 
 ## Команды агента
 
-```
-ameni tg stats <result.json>
-    Полная статистика чата: сообщения, участники, период,
-    длина, топ-10 отправителей, распределение медиа.
-
-ameni tg top <result.json>
-    Топ отправителей с процентной гистограммой.
-
-ameni tg activity <result.json>
-    Распределение сообщений по 24 часам и дням недели.
-
-ameni tg media <result.json>
-    Распределение типов медиа с гистограммой.
-
-ameni tg about
-    Информация об агенте: репозиторий, список команд.
-
-ameni tg help
-    Подробная документация всех команд.
-```
+| Команда | Описание | Arch Linux | Windows |
+|---------|----------|-----------|---------|
+| `stats <file>` | Полная статистика чата | `ameni tg stats result.json` | `.ameni/bin/ameni.ps1 stats result.json` |
+| `top <file>` | Топ отправителей | `ameni tg top result.json` | `.ameni/bin/ameni.ps1 top result.json` |
+| `activity <file>` | Активность по часам/дням | `ameni tg activity result.json` | `.ameni/bin/ameni.ps1 activity result.json` |
+| `media <file>` | Распределение медиа | `ameni tg media result.json` | `.ameni/bin/ameni.ps1 media result.json` |
+| `about` | Информация об агенте | `ameni tg about` | `.ameni/bin/ameni.ps1 about` |
+| `help` | Подробная справка | `ameni tg help` | `.ameni/bin/ameni.ps1 help` |
 
 ---
 
