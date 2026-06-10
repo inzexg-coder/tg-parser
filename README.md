@@ -25,7 +25,6 @@
 
 <br>
 
----
 
 ## Статистики веб-интерфейса
 
@@ -166,7 +165,6 @@
 | **Прочее** | totalForwards, forwardPct, totalEdits, totalLinks, totalEmojis, nightPct (ночная активность), weekendPct (выходные) |
 | **Слова** | topWords (топ-50), wordFreq (частотный словарь), uniqueWordsCount |
 
----
 
 ## CLI агент
 
@@ -267,7 +265,6 @@ Media distribution for Проектный чат:
   document     38   0.3%  █
 ```
 
----
 
 ## Установка
 
@@ -334,7 +331,6 @@ makepkg -si
 ameni tg about
 ```
 
----
 
 ## Как экспортировать чат
 
@@ -348,7 +344,6 @@ ameni tg about
 5. Нажмите **Export**
 6. После завершения найдите `result.json` в папке экспорта
 
----
 
 ## Команды агента
 
@@ -494,7 +489,6 @@ Available charts (ameni tg chart <name>):
 | help | `ameni tg help` | `.ameni/bin/ameni.ps1 help` |
 
 
----
 
 <p align="center">
   <img src=".ameni/assets/ameni-logo.svg" alt="Ameni" width="32">
@@ -502,23 +496,7 @@ Available charts (ameni tg chart <name>):
   <a href="https://github.com/inzexg-coder">@inzexg-coder</a>
 </p>
 
----
 
-## Связанные скиллы
-
-<p align="center">
-  <a href="https://github.com/inzexg-coder/ameni-tg-parser">
-    <img src=".ameni/assets/skill-tg.svg" width="64" alt="TG Parser">
-  </a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/inzexg-coder/ameni-vs-kernel">
-    <img src=".ameni/assets/skill-vs.svg" width="64" alt="VS Kernel">
-  </a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/inzexg-coder/fide-rating-calc">
-    <img src=".ameni/assets/skill-fide.svg" width="64" alt="FIDE Calc">
-  </a>
-</p>
 
 <p align="center">
 
