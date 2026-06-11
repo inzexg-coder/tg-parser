@@ -1,0 +1,7 @@
+interface:
+  display_name: "Ameni TG Parser"
+  short_description: "Telegram chat analyzer for exported result.json"
+  default_prompt: "Use $ameni-tg-parser to analyze an exported Telegram chat — compute stats, generate activity heatmaps, and visualize participant behavior."
+
+policy:
+  allow_implicit_invocation: true
